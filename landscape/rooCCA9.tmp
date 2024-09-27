@@ -1,0 +1,54 @@
+[gd_scene load_steps=6 format=3 uid="uid://bxvdsenc0vi2a"]
+
+[ext_resource type="Script" path="res://landscape/landscape.gd" id="1_t0g2w"]
+[ext_resource type="Script" path="res://ui/fps_ui.gd" id="2_o14h6"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jukki"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_7a6gb"]
+sky_material = SubResource("ProceduralSkyMaterial_jukki")
+
+[sub_resource type="Environment" id="Environment_6sgki"]
+background_mode = 2
+sky = SubResource("Sky_7a6gb")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="Root" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_6sgki")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.894139, 0.44779, 0, -0.44779, 0.894139, 31.7453, 30.0687, 82.9378)
+
+[node name="Landscape" type="Node3D" parent="."]
+script = ExtResource("1_t0g2w")
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("2_o14h6")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="NoisePreview" type="TextureRect" parent="UI/VBoxContainer"]
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+expand_mode = 1
+
+[node name="FPS" type="RichTextLabel" parent="UI/VBoxContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "---"
