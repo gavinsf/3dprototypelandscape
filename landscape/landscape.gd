@@ -2,6 +2,7 @@ extends Node3D
 # Creates verticies to form a landscape
 
 
+@onready var node_noise_preview = $"../UI/VBoxContainer/NoisePreview"
 
 var MESH_SCALE : float = 20.0
 var QUAD_GRID_LENGTH : int = 64
@@ -13,6 +14,7 @@ func _ready() -> void:
 	# generate noise
 	var noise = FastNoiseLite.new()
 	var image = noise.get_image(NOISE_SIDE_LENGTH, NOISE_SIDE_LENGTH)
+	node_noise_preview.texture = ImageTexture.create_from_image(image)
 	
 	# startmesh generation
 	var land = MeshInstance3D.new()
@@ -39,10 +41,9 @@ func _ready() -> void:
 	st.generate_normals() # normals point perpendicular up from each face
 	var mesh = st.commit() # arranges mesh data structures into arrays for us
 	land.mesh = mesh
-	land.material_override = material
+	#land.material_override = material
 	add_child(land)
 	pass 
-
 
 
 # HELPERS ###################################################################
@@ -55,18 +56,28 @@ func create_quad(
 	noiseVal3,
 	noiseVal4,
 	):
+	
+	# define vertex 0
 	st.set_uv( Vector2(0, 0) )
-	st.add_vertex(pt + Vector3(0, noiseVal1, 0) ) # vertex 0
+	st.set_color(Color(noiseVal1, noiseVal1, noiseVal1, 1))
+	st.add_vertex(pt + Vector3(0, noiseVal1, 0) ) 
 	count[0] += 1
+	# define vertex 1
 	st.set_uv( Vector2(1, 0) )
-	st.add_vertex(pt +  Vector3(1, noiseVal2, 0) ) # vertex 1
+	st.set_color(Color(noiseVal2, noiseVal2, noiseVal2, 1))
+	st.add_vertex(pt +  Vector3(1, noiseVal2, 0) ) 
 	count[0] += 1
+	# define vertex 2
 	st.set_uv( Vector2(1, 1) )
-	st.add_vertex(pt +  Vector3(1, noiseVal3, 1) ) # vertex 2
+	st.set_color(Color(noiseVal3, noiseVal3, noiseVal3, 1))
+	st.add_vertex(pt +  Vector3(1, noiseVal3, 1) ) 
 	count[0] += 1
+	# define vertex 3
 	st.set_uv( Vector2(0, 1) )
-	st.add_vertex(pt +  Vector3(0, noiseVal4, 1) ) # vertex 3
+	st.set_color(Color(noiseVal4, noiseVal4, noiseVal4, 1))
+	st.add_vertex(pt +  Vector3(0, noiseVal4, 1) ) 
 	count[0] += 1
+	
 	
 	st.add_index(count[0] - 4) # make the first triangle
 	st.add_index(count[0] - 3)
