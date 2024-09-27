@@ -22,7 +22,7 @@ func created_texture(wid: int, height: int) -> ImageTexture:
 	for i in range(wid):
 		for j in range(height):
 			var noise_val = (image.get_pixel(i, j).r + 1) / 2  # add an offset to the noise value
-			var brown_color = Color(0.2, 0.05, 0.1)  # Brown color
+			var brown_color = Color(0.1, 0.04, 0)  # Brown color
 			var colored_pixel = Color(
 				brown_color.r * noise_val,
 				brown_color.g * noise_val,
