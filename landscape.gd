@@ -2,12 +2,17 @@ extends Node3D
 # Creates verticies to form a landscape
 
 
-var MESH_SCALE : float = 20.0
 
+var MESH_SCALE : float = 20.0
+var QUAD_GRID_LENGTH : int = 64
+var NOISE_SIDE_LENGTH : int = 512
+
+
+# VIRTUALS ###################################################################
 func _ready() -> void:
 	# generate noise
 	var noise = FastNoiseLite.new()
-	var image = noise.get_image(512, 512)
+	var image = noise.get_image(NOISE_SIDE_LENGTH, NOISE_SIDE_LENGTH)
 	
 	# startmesh generation
 	var land = MeshInstance3D.new()
@@ -20,15 +25,16 @@ func _ready() -> void:
 	var material = StandardMaterial3D.new()
 	material.albedo_texture = texture
 	
-	for i in range(64):
-		for j in range(64):
+	
+	for i in range(QUAD_GRID_LENGTH):
+		for j in range(QUAD_GRID_LENGTH):
+			
 			var noiseVal1 = noise.get_noise_2d(i, j) * MESH_SCALE
 			var noiseVal2 = noise.get_noise_2d(i+1, j) * MESH_SCALE
 			var noiseVal3 = noise.get_noise_2d(i+1, j+1) * MESH_SCALE
 			var noiseVal4 = noise.get_noise_2d(i, j+1) * MESH_SCALE
 			
-			_quad(st, Vector3(i,0,j), count, noiseVal1, noiseVal2, noiseVal3, noiseVal4)
-			_quad(st, Vector3(i,0,j), count, noiseVal1, noiseVal2, noiseVal3, noiseVal4)
+			create_quad(st, Vector3(i,0,j), count, noiseVal1, noiseVal2, noiseVal3, noiseVal4)
 	
 	st.generate_normals() # normals point perpendicular up from each face
 	var mesh = st.commit() # arranges mesh data structures into arrays for us
@@ -37,7 +43,10 @@ func _ready() -> void:
 	add_child(land)
 	pass 
 
-func _quad(
+
+
+# HELPERS ###################################################################
+func create_quad(
 	st : SurfaceTool,
 	pt: Vector3,
 	count: Array[int],
