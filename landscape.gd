@@ -1,17 +1,22 @@
 extends Node3D
+# Creates verticies to form a landscape
 
-var land : MeshInstance3D
+
 var MESH_SCALE : float = 20.0
 
 func _ready() -> void:
-	land = MeshInstance3D.new()
-	var st = SurfaceTool.new()
-	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	var count : Array[int] = [0]
-	
+	# generate noise
 	var noise = FastNoiseLite.new()
 	var image = noise.get_image(512, 512)
+	
+	# startmesh generation
+	var land = MeshInstance3D.new()
+	var st = SurfaceTool.new()
+	
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var count : Array[int] = [0]
 	var texture = ImageTexture.create_from_image(image)
+	
 	var material = StandardMaterial3D.new()
 	material.albedo_texture = texture
 	
@@ -22,10 +27,7 @@ func _ready() -> void:
 			var noiseVal3 = noise.get_noise_2d(i+1, j+1) * MESH_SCALE
 			var noiseVal4 = noise.get_noise_2d(i, j+1) * MESH_SCALE
 			
-			
-			
-			
-			
+			_quad(st, Vector3(i,0,j), count, noiseVal1, noiseVal2, noiseVal3, noiseVal4)
 			_quad(st, Vector3(i,0,j), count, noiseVal1, noiseVal2, noiseVal3, noiseVal4)
 	
 	st.generate_normals() # normals point perpendicular up from each face
