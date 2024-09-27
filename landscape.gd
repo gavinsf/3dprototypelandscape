@@ -1,14 +1,13 @@
 extends Node3D
 
 var land : MeshInstance3D
-var mesh_scale : int
+var MESH_SCALE : float = 20.0
 
 func _ready() -> void:
 	land = MeshInstance3D.new()
 	var st = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	var count : Array[int] = [0]
-	var MESH_SCALE = 20
 	
 	var noise = FastNoiseLite.new()
 	var image = noise.get_image(512, 512)
