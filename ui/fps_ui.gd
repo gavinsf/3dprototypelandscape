@@ -21,4 +21,4 @@ func _ready() -> void:
 # SIGNALS ####################################################################
 func _on_fps_timeout():
 	fps_timer.start(DURATION)
-	node_fps_textbox.text = str(Engine.get_frames_per_second())
+	node_fps_textbox.text = "  "+str(Engine.get_frames_per_second())

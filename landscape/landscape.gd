@@ -12,7 +12,7 @@ var NOISE_SIDE_LENGTH : int = 512
 # VIRTUALS ###################################################################
 func _ready() -> void:
 	# generate noise
-	var noise = FastNoiseLite.new()
+	var noise = generate_random_noise()
 	var image = noise.get_image(NOISE_SIDE_LENGTH, NOISE_SIDE_LENGTH)
 	var texture = ImageTexture.create_from_image(image)
 	node_noise_preview.texture = texture
@@ -29,15 +29,11 @@ func _ready() -> void:
 	var count : Array[int] = [0] 
 	
 	var surface_material = StandardMaterial3D.new()
-	#surface_material.vertex_color_use_as_albedo = true	# these two are mutually exclusive
 	surface_material.albedo_texture = texture			# these two are mutually exclusive
 	
 	# start mesh generation
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	st.set_material(surface_material)
-	
-	var highest_val = 0
-	var lowest_val = 0
 	
 	for i in range(QUAD_GRID_LENGTH):
 		for j in range(QUAD_GRID_LENGTH):
@@ -71,13 +67,7 @@ func create_quad(
 	noiseVal4,
 	):
 	
-	# TODO: run set_color(vertex_height) of some sort per vertex
-	# if material.vertex_color_use_as_albedo = true, we can set colours here!
-	#	must set to vertex noise value of 0-1)) on a per-vertex basis
-	#	appears that the noise does not distribute over this range, resulting 
-	#	in values well outside of 0-1
-	#	testing suggests a range of (10.29,-5.6) for seed 1 (default noise seed)
-	#	must normalize this number somehow
+	# TODO: re-align albedo mapping of texture
 	
 	# define vertexes
 	# vertex 0
@@ -109,3 +99,12 @@ func create_quad(
 	st.add_index(count[0] - 4) # make the second triangle
 	st.add_index(count[0] - 2)
 	st.add_index(count[0] - 1)
+
+func generate_random_noise(noise_seed : int = -1) -> FastNoiseLite:
+	var _noise = FastNoiseLite.new()
+	if noise_seed != -1: 
+		_noise.seed = noise_seed
+		return _noise # guard clause
+	_noise.seed = randf() * 10_000_000
+	
+	return _noise
