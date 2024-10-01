@@ -13,6 +13,7 @@ var NOISE_SIDE_LENGTH : int = 512
 func _ready() -> void:
 	# generate noise
 	var noise = generate_random_noise()
+	
 	var image = noise.get_image(NOISE_SIDE_LENGTH, NOISE_SIDE_LENGTH)
 	var texture = ImageTexture.create_from_image(image)
 	node_noise_preview.texture = texture
