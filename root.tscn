@@ -1,10 +1,11 @@
-[gd_scene load_steps=13 format=3 uid="uid://bxvdsenc0vi2a"]
+[gd_scene load_steps=14 format=3 uid="uid://bxvdsenc0vi2a"]
 
 [ext_resource type="PackedScene" uid="uid://bqfv48bj7ivrp" path="res://landscape/landscape.tscn" id="1_sxhf2"]
 [ext_resource type="PackedScene" uid="uid://d0pbooty3jhku" path="res://glider/glider.tscn" id="2_ci8io"]
 [ext_resource type="Script" path="res://environment/clouds.gd" id="2_t3g5x"]
 [ext_resource type="Texture2D" uid="uid://brsogufmomnjd" path="res://streak.png" id="3_o3t2g"]
 [ext_resource type="Curve3D" uid="uid://cofu0jmgkqhc1" path="res://glider/glider_curve.tres" id="3_xm1ld"]
+[ext_resource type="Script" path="res://path/glider_path.gd" id="6_03th0"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_w2wsm"]
 size = Vector2(256, 256)
@@ -79,21 +80,17 @@ process_material = SubResource("ParticleProcessMaterial_8p5tc")
 draw_pass_1 = SubResource("RibbonTrailMesh_2qa34")
 
 [node name="Glider" parent="." node_paths=PackedStringArray("camera_rig", "target_path_follower") instance=ExtResource("2_ci8io")]
-
-transform = Transform3D(0.137901, 0.0600441, 0.988595, -0.0690195, 0.996235, -0.0508863, -0.987982, -0.0612152, 0.141542, 183.392, 13.3995, 106.596)
-
+transform = Transform3D(0.137901, 0.0600442, 0.988594, -0.0690195, 0.996237, -0.0508863, -0.987982, -0.0612153, 0.141542, 183.392, 13.3995, 106.596)
 camera_rig = NodePath("../CameraRig")
 target_path_follower = NodePath("../Path3D/PathFollow3D")
 
 [node name="Path3D" type="Path3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 curve = ExtResource("3_xm1ld")
+script = ExtResource("6_03th0")
 
 [node name="PathFollow3D" type="PathFollow3D" parent="Path3D"]
-
-
-transform = Transform3D(0.137901, 0.0600441, 0.988595, -0.0690195, 0.996235, -0.0508863, -0.987982, -0.0612152, 0.141542, 183.392, 11.3995, 106.596)
-
+transform = Transform3D(0.137901, 0.0600442, 0.988594, -0.0690195, 0.996237, -0.0508863, -0.987982, -0.0612153, 0.141542, 183.392, 11.3995, 106.596)
 progress = 217.702
 
 [node name="RemoteTransform3D" type="RemoteTransform3D" parent="Path3D/PathFollow3D"]

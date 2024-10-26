@@ -1,4 +1,5 @@
 extends Node3D
+# Follows a targeted PathFollow3D.
 
 
 
@@ -15,8 +16,9 @@ var log_progess_timer = Timer.new()
 
 # VIRTUALS #####################################################################
 func _ready() -> void:
+	# sets up timer for printing the PathFollower3D's progress_ratio attribute.
 	if debug_timer:
-		log_progess_timer.timeout.connect(_on_progress_timeout)
+		log_progess_timer.timeout.connect(_on_debug_progress_timeout)
 		add_child(log_progess_timer)
 		log_progess_timer.start(1)
 
@@ -35,6 +37,6 @@ func push_partial_transform_to_camera() -> void:
 
 
 # SIGNALS ######################################################################
-func _on_progress_timeout() -> void:
+func _on_debug_progress_timeout() -> void:
 	print(target_path_follower.progress_ratio)
 	log_progess_timer.start(1)
