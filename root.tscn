@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://d0pbooty3jhku" path="res://glider/glider.tscn" id="2_ci8io"]
 [ext_resource type="Script" path="res://environment/clouds.gd" id="2_t3g5x"]
 [ext_resource type="Texture2D" uid="uid://brsogufmomnjd" path="res://streak.png" id="3_o3t2g"]
-[ext_resource type="Curve3D" uid="uid://cofu0jmgkqhc1" path="res://glider/glider_curve.tres" id="3_xm1ld"]
+[ext_resource type="Curve3D" uid="uid://ihyhb8d1y7x7" path="res://glider/demo_glider_curve.tres" id="5_kpe4f"]
 [ext_resource type="Script" path="res://path/glider_path.gd" id="6_03th0"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_w2wsm"]
@@ -49,7 +49,8 @@ size = 13.381
 [node name="Root" type="Node3D"]
 
 [node name="Clouds" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 114.689, 5.4154, 129.257)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 128, 5.415, 128)
+visible = false
 mesh = SubResource("PlaneMesh_w2wsm")
 script = ExtResource("2_t3g5x")
 
@@ -69,7 +70,7 @@ expand_mode = 1
 environment = SubResource("Environment_6sgki")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment"]
-transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+transform = Transform3D(-4.37114e-08, -1, -4.37114e-08, 0, -4.37114e-08, 1, -1, 4.37114e-08, 1.91069e-15, 106.918, 78.6937, 96.4234)
 shadow_enabled = true
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="Environment"]
@@ -80,18 +81,17 @@ process_material = SubResource("ParticleProcessMaterial_8p5tc")
 draw_pass_1 = SubResource("RibbonTrailMesh_2qa34")
 
 [node name="Glider" parent="." node_paths=PackedStringArray("camera_rig", "target_path_follower") instance=ExtResource("2_ci8io")]
-transform = Transform3D(0.137901, 0.0600442, 0.988594, -0.0690195, 0.996237, -0.0508863, -0.987982, -0.0612153, 0.141542, 183.392, 13.3995, 106.596)
+transform = Transform3D(0.2798, -0.107415, -0.953987, 0.268276, 0.962801, -0.0297263, 0.92173, -0.247623, 0.298244, 105.979, 4.4017, 43.9049)
 camera_rig = NodePath("../CameraRig")
 target_path_follower = NodePath("../Path3D/PathFollow3D")
 
 [node name="Path3D" type="Path3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
-curve = ExtResource("3_xm1ld")
+curve = ExtResource("5_kpe4f")
 script = ExtResource("6_03th0")
 
 [node name="PathFollow3D" type="PathFollow3D" parent="Path3D"]
-transform = Transform3D(0.137901, 0.0600442, 0.988594, -0.0690195, 0.996237, -0.0508863, -0.987982, -0.0612153, 0.141542, 183.392, 11.3995, 106.596)
-progress = 217.702
+transform = Transform3D(0.2798, -0.107415, -0.953987, 0.268276, 0.962801, -0.0297263, 0.92173, -0.247623, 0.298244, 105.979, 4.4017, 43.9049)
+progress = 4.12844
 
 [node name="RemoteTransform3D" type="RemoteTransform3D" parent="Path3D/PathFollow3D"]
 remote_path = NodePath("../../../Glider")
@@ -99,6 +99,6 @@ remote_path = NodePath("../../../Glider")
 [node name="CameraRig" type="Node3D" parent="."]
 
 [node name="Camera3D" type="Camera3D" parent="CameraRig"]
-transform = Transform3D(1, -8.74228e-08, 8.74228e-08, 8.74228e-08, 1, 8.74228e-08, -8.74228e-08, -8.74228e-08, 1, 0, 1, 2)
+transform = Transform3D(1, -8.74228e-08, 8.74228e-08, 3.70294e-08, 0.88643, 0.462863, -1.17959e-07, -0.462863, 0.88643, 0, 1, 2)
 
 [connection signal="noise_generated" from="Landscape" to="Clouds" method="_on_landscape_noise_generated"]
