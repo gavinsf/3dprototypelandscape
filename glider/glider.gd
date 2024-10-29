@@ -8,7 +8,7 @@ extends Node3D
 @export var target_path_follower : PathFollow3D
 @onready var node_GliderMesh = $GliderMesh
 
-var SPEED = 0.01
+var SPEED = 0.06
 var log_progess_timer = Timer.new()
 @export var debug_timer = false
 

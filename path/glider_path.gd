@@ -5,19 +5,57 @@ extends Path3D
 
 # MEMBERS ######################################################################
 @export var DRAW_HILBERT_CURVE = true
-var HEIGHT = 14
+@export var DRAW_GLIDE_PATH = true
+var HEIGHT = 15
+var SCALE = 8.0
+var ORDER = 5
 
 # VIRTUALS #####################################################################
 func _ready() -> void:
-	var hilbert_curve : Curve2D = create_hilbert_curve2d(8)
-	if DRAW_HILBERT_CURVE: 
-		draw_lines_from_curve_array(hilbert_curve, HEIGHT)
-	#for _point in hilbert_curve: print(_point)
-
+	var hilbert_curve : Curve2D = create_hilbert_curve2d(ORDER, SCALE)
+	
+	if DRAW_HILBERT_CURVE:
+		draw_straight_lines_from_curve_array(hilbert_curve, HEIGHT)
+	
+	curve = create_curve(hilbert_curve, 6)
+	
+	if DRAW_GLIDE_PATH: draw_glide_path(curve)
+	
 
 
 # METHODS ######################################################################
-func create_hilbert_curve2d(order : int) -> Curve2D:
+func create_curve(sample_curve : Curve2D, sample_n : int) -> Curve3D:
+	var _starting_index = floor(randf() * (sample_curve.point_count - sample_n))
+	var _new_curve = Curve3D.new()
+	
+	# Add points.
+	for _n in sample_n:
+		var _pos : Vector2 = sample_curve.get_point_position(_starting_index + _n)
+		var _point = Vector3(_pos.x, HEIGHT, _pos.y)
+		_new_curve.add_point(_point, Vector3.ZERO, Vector3.ZERO)
+	# Make last point = first point to knit curve together.
+	_new_curve.add_point(_new_curve.get_point_position(0))
+	
+	# Set control points.
+	for _point in _new_curve.point_count:
+		var _prev_point : Vector3
+		var _next_point : Vector3
+		var _control : Vector3
+		
+		if _point == (0): _prev_point = _new_curve.get_point_position(_new_curve.point_count - 1)
+		else: _prev_point = _new_curve.get_point_position(_point - 1)
+		
+		if _point == (_new_curve.point_count - 1): _next_point = _new_curve.get_point_position(0)
+		else: _next_point = _new_curve.get_point_position(_point + 1)
+		
+		_control = ((_next_point) - (_prev_point)).normalized() * 5.0
+		
+		_new_curve.set_point_in(_point, -_control)
+		_new_curve.set_point_out(_point, _control)
+	
+	return _new_curve
+
+func create_hilbert_curve2d(order : int, point_scale : float) -> Curve2D:
 	# Define Hilbert curve L-System 
 	var _alphabet = {"productions":["A","B"], "constants":["F","+","-"]} # V
 	var _axiom = "A" # w
@@ -47,7 +85,7 @@ func create_hilbert_curve2d(order : int) -> Curve2D:
 		_l_system_str = _constructed_string
 	
 	# Use string-encoded L-System string to guide the progress of a curve3D
-	var _path_direction : Vector2 = Vector2(1,0) # Vector starts in +X direction
+	var _path_direction : Vector2 = Vector2(point_scale, 0) # Vector starts in +X direction
 	
 	# First point...
 	_curve[0].add_point(Vector2.ZERO, Vector2.ZERO, _path_direction)
@@ -78,7 +116,7 @@ func set_next_lsystem_point(direction:Vector2, ref_curve:Curve2D) -> void:
 	ref_curve.add_point(_point_pos, -direction, Vector2.ZERO)
 	return
 
-func draw_lines_from_curve_array(curve_ : Curve2D, height : float) -> void:
+func draw_straight_lines_from_curve_array(curve_ : Curve2D, height : float) -> void:
 	var _mesh = MeshInstance3D.new()
 	var _surface_tool = SurfaceTool.new()
 	var _material = StandardMaterial3D.new()
@@ -106,6 +144,39 @@ func draw_lines_from_curve_array(curve_ : Curve2D, height : float) -> void:
 		_surface_tool.add_index(point_tally)
 		
 		_previous_point = _point
+	
+	_mesh.mesh = _surface_tool.commit()
+	_mesh.material_override = _material
+	
+	add_child(_mesh)
+
+func draw_glide_path(_curve):
+	var _samples = 512
+	var _distance = _curve.get_baked_length() / _samples
+	
+	var _mesh = MeshInstance3D.new()
+	var _surface_tool = SurfaceTool.new()
+	var _material = StandardMaterial3D.new()
+	_material.vertex_color_use_as_albedo = true
+	_surface_tool.begin(Mesh.PRIMITIVE_LINES)
+	
+	
+	var _prev = _curve.sample_baked(_curve.get_baked_length())
+	var point_tally = -1
+	
+	for _n in _samples:
+		var _current = _curve.sample_baked(_n * _distance)
+		
+		_surface_tool.set_color(Color(1.0, 0.01, 0.01, 1.0))
+		_surface_tool.add_vertex(Vector3(_prev.x, _prev.y, _prev.z))
+		_surface_tool.set_color(Color(1.0, 0.01, 0.01, 1.0))
+		_surface_tool.add_vertex(Vector3(_current.x, _current.y, _current.z))
+		
+		point_tally += 2
+		_surface_tool.add_index(point_tally - 1)
+		_surface_tool.add_index(point_tally)
+		
+		_prev = _current
 	
 	_mesh.mesh = _surface_tool.commit()
 	_mesh.material_override = _material

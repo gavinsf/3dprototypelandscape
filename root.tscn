@@ -1,10 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://bxvdsenc0vi2a"]
+[gd_scene load_steps=13 format=3 uid="uid://bxvdsenc0vi2a"]
 
 [ext_resource type="PackedScene" uid="uid://bqfv48bj7ivrp" path="res://landscape/landscape.tscn" id="1_sxhf2"]
 [ext_resource type="PackedScene" uid="uid://d0pbooty3jhku" path="res://glider/glider.tscn" id="2_ci8io"]
 [ext_resource type="Script" path="res://environment/clouds.gd" id="2_t3g5x"]
 [ext_resource type="Texture2D" uid="uid://brsogufmomnjd" path="res://streak.png" id="3_o3t2g"]
-[ext_resource type="Curve3D" uid="uid://ihyhb8d1y7x7" path="res://glider/demo_glider_curve.tres" id="5_kpe4f"]
 [ext_resource type="Script" path="res://path/glider_path.gd" id="6_03th0"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_w2wsm"]
@@ -81,17 +80,16 @@ process_material = SubResource("ParticleProcessMaterial_8p5tc")
 draw_pass_1 = SubResource("RibbonTrailMesh_2qa34")
 
 [node name="Glider" parent="." node_paths=PackedStringArray("camera_rig", "target_path_follower") instance=ExtResource("2_ci8io")]
-transform = Transform3D(0.2798, -0.107415, -0.953987, 0.268276, 0.962801, -0.0297263, 0.92173, -0.247623, 0.298244, 105.979, 4.4017, 43.9049)
+transform = Transform3D(0.999924, 0, 0, 0, 0.999921, 0, 0, 0, 0.999959, 50, 0, 90)
 camera_rig = NodePath("../CameraRig")
 target_path_follower = NodePath("../Path3D/PathFollow3D")
 
 [node name="Path3D" type="Path3D" parent="."]
-curve = ExtResource("5_kpe4f")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 0, 90)
 script = ExtResource("6_03th0")
 
 [node name="PathFollow3D" type="PathFollow3D" parent="Path3D"]
-transform = Transform3D(0.2798, -0.107415, -0.953987, 0.268276, 0.962801, -0.0297263, 0.92173, -0.247623, 0.298244, 105.979, 4.4017, 43.9049)
-progress = 4.12844
+transform = Transform3D(0.999924, 0, 0, 0, 0.999921, 0, 0, 0, 0.999959, 0, 0, 0)
 
 [node name="RemoteTransform3D" type="RemoteTransform3D" parent="Path3D/PathFollow3D"]
 remote_path = NodePath("../../../Glider")
